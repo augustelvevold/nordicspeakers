@@ -1,0 +1,26 @@
+---
+// TODO(content): finalize navigation, add logo asset and a mobile nav island
+// (the only place client JS is warranted — see CLAUDE.md stack notes). The
+// primary "Book foredrag" CTA is required site-wide (docs/site-structure.md).
+import { SITE } from '../lib/site';
+
+const nav = [
+  { href: '/foredragsholdere/', label: 'Foredragsholdere' },
+  { href: '/tema/', label: 'Tema' },
+  { href: '/om-oss/', label: 'Om oss' },
+  { href: '/kontakt/', label: 'Kontakt' },
+];
+---
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="/" class="site-header__brand">{SITE.name}</a>
+    <nav class="site-nav" aria-label="Hovedmeny">
+      <ul>
+        {nav.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <a href="/book-foredrag/" class="btn btn--primary">Book foredrag</a>
+  </div>
+</header>

@@ -1,0 +1,16 @@
+---
+// TODO(content): real footer navigation + org/contact details sourced from
+// Sanity `siteSettings` (docs/content-model.md).
+import { SITE } from '../lib/site';
+
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <p class="site-footer__copy">&copy; {year} {SITE.name}</p>
+    <address class="site-footer__contact">
+      {/* TODO(content): kontaktinformasjon */}
+      Norges plattform for profesjonelle foredragsholdere.
+    </address>
+  </div>
+</footer>

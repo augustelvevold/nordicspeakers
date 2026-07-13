@@ -1,0 +1,41 @@
+---
+// The single HTML skeleton every page renders through. Owns <html>/<head>,
+// the SEO component, landmarks and the skip link. Page files pass SEO props +
+// schema straight through and fill the <slot>.
+import '../styles/global.css';
+import SEO from '../components/SEO.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../lib/site';
+import type { JsonLd } from '../lib/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  image?: string;
+  type?: 'website' | 'article' | 'profile';
+  schema?: JsonLd | JsonLd[];
+  noindex?: boolean;
+}
+
+const props = Astro.props;
+---
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {/* TODO(content): self-host primary font (woff2) + preload + font-display:swap (docs/seo.md). */}
+    <SEO {...props} />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Hopp til innhold</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

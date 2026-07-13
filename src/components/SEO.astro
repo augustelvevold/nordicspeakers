@@ -1,0 +1,71 @@
+---
+// The single source of meta + structured data. Every page renders exactly one
+// <SEO />, via BaseLayout — page files never emit their own meta/schema tags
+// (CLAUDE.md "Conventions", docs/seo.md).
+import { SITE } from '../lib/site';
+import type { JsonLd } from '../lib/schema';
+
+interface Props {
+  /** ≤60 chars. Required — no default silently reused across pages. */
+  title: string;
+  /** ≤155 chars. Required — no default silently reused across pages. */
+  description: string;
+  /** Override the self-referencing canonical (rarely needed). */
+  canonical?: string;
+  /** OG image path or URL; resolved to absolute. Defaults to the site OG image. */
+  image?: string;
+  type?: 'website' | 'article' | 'profile';
+  /** One or more JSON-LD objects from src/lib/schema.ts. */
+  schema?: JsonLd | JsonLd[];
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  image = SITE.defaultOgImage,
+  type = 'website',
+  schema,
+  noindex = false,
+} = Astro.props;
+
+// Every page sets a self-referencing canonical unless explicitly overridden.
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+const schemas = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
+
+// Dev-time guardrails for the answer-engine length budgets (docs/seo.md).
+if (import.meta.env.DEV) {
+  if (title.length > 60) {
+    console.warn(`[SEO] title is ${title.length} chars (>60): "${title}"`);
+  }
+  if (description.length > 155) {
+    console.warn(`[SEO] description is ${description.length} chars (>155): "${description}"`);
+  }
+}
+---
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+{/* Open Graph */}
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content={SITE.locale} />
+<meta property="og:site_name" content={SITE.name} />
+
+{/* Twitter */}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+{/* JSON-LD — one script per object; each already carries @context */}
+{schemas.map((s) => (
+  <script type="application/ld+json" set:html={JSON.stringify(s)} />
+))}
