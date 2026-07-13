@@ -102,7 +102,21 @@ export async function onRequestPost(context: {
   env: Env;
 }): Promise<Response> {
   const { request, env } = context;
-  const form = await request.formData();
+  let form: FormData;
+  try {
+    form = await request.formData();
+  } catch {
+    // Malformed / non-form body (e.g. a bot probe) — respond cleanly, don't throw.
+    return wantsJson(request)
+      ? new Response(JSON.stringify({ ok: false, errors: ['Ugyldig skjemadata.'] }), {
+          status: 400,
+          headers: { 'content-type': 'application/json' },
+        })
+      : new Response('Ugyldig skjemadata.', {
+          status: 400,
+          headers: { 'content-type': 'text/plain; charset=utf-8' },
+        });
+  }
   const field = (k: string): string => {
     const v = form.get(k);
     return typeof v === 'string' ? v : '';
