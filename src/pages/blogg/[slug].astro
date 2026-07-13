@@ -6,6 +6,7 @@ import Cta from '../../components/Cta.astro';
 import { article as articleSchema, breadcrumbList } from '../../lib/schema';
 import { renderPortableText } from '../../lib/portableText';
 import { truncate } from '../../lib/text';
+import { urlFor } from '../../lib/image';
 import { getAllArticlesDetail, type ArticleDetail } from '../../lib/queries';
 
 export async function getStaticPaths() {
@@ -26,6 +27,9 @@ const crumbs = [
 ];
 
 const bodyHtml = renderPortableText(article.body);
+const ogImage = article.image?.asset?._ref
+  ? urlFor(article.image).width(1200).height(630).fit('crop').auto('format').url()
+  : undefined;
 const fmt = (d: string) =>
   new Date(d).toLocaleDateString('nb-NO', { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -36,7 +40,7 @@ const schema = [
     datePublished: article.publishedAt,
     dateModified: article.updatedAt,
     description: article.excerpt,
-    image: article.image?.asset ? url : undefined,
+    image: ogImage,
     author: article.authorName ? { name: article.authorName } : undefined,
     type: 'BlogPosting',
   }),
@@ -46,7 +50,7 @@ const schema = [
 const title = truncate(`${article.title} | Nordic Speakers`, 60);
 const description = truncate(article.excerpt);
 ---
-<BaseLayout title={title} description={description} type="article" schema={schema}>
+<BaseLayout title={title} description={description} type="article" image={ogImage} schema={schema}>
   <article class="section">
     <div class="container narrow">
       <Breadcrumbs crumbs={crumbs} />

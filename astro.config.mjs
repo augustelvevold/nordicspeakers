@@ -9,5 +9,10 @@ export default defineConfig({
   site: 'https://nordicspeakers.no',
   output: 'static',
   trailingSlash: 'always',
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      // Keep noindex utility routes and the llms.txt endpoint out of the sitemap.
+      filter: (page) => !page.includes('/takk/') && !page.includes('/llms.txt'),
+    }),
+  ],
 });

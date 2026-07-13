@@ -33,6 +33,11 @@ const sameAs = [speaker.externalUrl, ...(speaker.sameAs ?? [])].filter(
 const imageUrl = speaker.image?.asset?._ref
   ? urlFor(speaker.image).width(800).auto('format').url()
   : undefined;
+// Dedicated 1200×630 crop for social sharing (og:image); falls back to the
+// site default when the speaker has no photo yet.
+const ogImage = speaker.image?.asset?._ref
+  ? urlFor(speaker.image).width(1200).height(630).fit('crop').auto('format').url()
+  : undefined;
 
 const schema = [
   person({
@@ -52,7 +57,7 @@ const firstName = speaker.name.split(' ')[0];
 const title = `${speaker.name} — foredragsholder | Nordic Speakers`;
 const description = truncate(speaker.shortBio);
 ---
-<BaseLayout title={title} description={description} type="profile" schema={schema}>
+<BaseLayout title={title} description={description} type="profile" image={ogImage} schema={schema}>
   <article class="section">
     <div class="container">
       <Breadcrumbs crumbs={crumbs} />
