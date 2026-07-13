@@ -764,6 +764,39 @@ address {
   margin: 0;
 }
 
+/* ---- Blog / case studies / testimonials ------------------------------ */
+
+.empty-state {
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  color: var(--color-muted);
+}
+
+.byline {
+  margin-top: calc(var(--space-2) * -1);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.article-hero {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  margin-block: var(--space-4);
+}
+
+.testimonial-grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 48rem) {
+  .testimonial-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 /* ---- Motion preferences ---------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {

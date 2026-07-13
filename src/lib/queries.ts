@@ -104,3 +104,94 @@ export function getAllTopicsDetail() {
     `*[_type=="topic" && defined(slug.current)]|order(title)${TOPIC_DETAIL}`,
   );
 }
+
+// ---- Articles / case studies / testimonials (step 5) -------------------------
+
+export interface ArticleCardData {
+  title: string;
+  slug: string;
+  excerpt: string;
+  publishedAt: string;
+  image?: SanityImageValue;
+  authorName?: string;
+}
+export interface ArticleDetail extends ArticleCardData {
+  updatedAt?: string;
+  body?: unknown;
+  topics?: TopicRef[];
+}
+export interface CaseStudyCardData {
+  title: string;
+  slug: string;
+  client: string;
+}
+export interface CaseStudyDetail extends CaseStudyCardData {
+  challenge?: string;
+  solution?: string;
+  result?: string;
+  quote?: string;
+  speaker?: { name: string; slug: string };
+}
+export interface TestimonialFull {
+  quote: string;
+  personName: string;
+  personRole?: string;
+  company?: string;
+  speaker?: { name: string; slug: string };
+}
+
+const ARTICLE_CARD = `{
+  title, "slug": slug.current, excerpt, publishedAt,
+  "image": mainImage{alt, asset},
+  "authorName": author->name
+}`;
+
+const ARTICLE_DETAIL = `{
+  title, "slug": slug.current, excerpt, publishedAt, updatedAt,
+  "image": mainImage{alt, asset},
+  body,
+  "topics": topics[]->{ "title": title, "slug": slug.current },
+  "authorName": author->name
+}`;
+
+const CASE_CARD = `{ title, "slug": slug.current, client }`;
+
+const CASE_DETAIL = `{
+  title, "slug": slug.current, client, challenge, solution, result, quote,
+  "speaker": speaker->{ name, "slug": slug.current }
+}`;
+
+const TESTIMONIAL = `{
+  quote, personName, personRole, company,
+  "speaker": speaker->{ name, "slug": slug.current }
+}`;
+
+export function getAllArticles() {
+  return sanityClient.fetch<ArticleCardData[]>(
+    `*[_type=="article" && defined(slug.current)]|order(publishedAt desc)${ARTICLE_CARD}`,
+  );
+}
+
+export function getAllArticlesDetail() {
+  return sanityClient.fetch<ArticleDetail[]>(
+    `*[_type=="article" && defined(slug.current)]|order(publishedAt desc)${ARTICLE_DETAIL}`,
+  );
+}
+
+export function getAllCaseStudies() {
+  return sanityClient.fetch<CaseStudyCardData[]>(
+    `*[_type=="caseStudy" && defined(slug.current)]|order(title)${CASE_CARD}`,
+  );
+}
+
+export function getAllCaseStudiesDetail() {
+  return sanityClient.fetch<CaseStudyDetail[]>(
+    `*[_type=="caseStudy" && defined(slug.current)]|order(title)${CASE_DETAIL}`,
+  );
+}
+
+export function getAllTestimonials() {
+  return sanityClient.fetch<TestimonialFull[]>(
+    `*[_type=="testimonial"]|order(_createdAt desc)${TESTIMONIAL}`,
+  );
+}

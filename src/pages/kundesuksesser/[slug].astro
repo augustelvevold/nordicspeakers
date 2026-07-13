@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Cta from '../../components/Cta.astro';
+import { breadcrumbList } from '../../lib/schema';
+import { truncate } from '../../lib/text';
+import { getAllCaseStudiesDetail, type CaseStudyDetail } from '../../lib/queries';
+
+export async function getStaticPaths() {
+  const cases = await getAllCaseStudiesDetail();
+  return cases.map((c) => ({ params: { slug: c.slug }, props: { caseStudy: c } }));
+}
+
+interface Props {
+  caseStudy: CaseStudyDetail;
+}
+const { caseStudy } = Astro.props;
+
+const url = `/kundesuksesser/${caseStudy.slug}/`;
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Kundesuksesser', url: '/kundesuksesser/' },
+  { name: caseStudy.title, url },
+];
+
+const title = truncate(`${caseStudy.title} | Nordic Speakers`, 60);
+const description = truncate(
+  [caseStudy.client, caseStudy.result ?? caseStudy.challenge].filter(Boolean).join(' — '),
+);
+const schema = [breadcrumbList(crumbs)];
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <article class="section">
+    <div class="container narrow">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1>{caseStudy.title}</h1>
+      <p id="intro" class="lead">Kunde: {caseStudy.client}</p>
+
+      {caseStudy.challenge && (<><h2>Utfordring</h2><p>{caseStudy.challenge}</p></>)}
+      {caseStudy.solution && (<><h2>Løsning</h2><p>{caseStudy.solution}</p></>)}
+      {caseStudy.result && (<><h2>Resultat</h2><p>{caseStudy.result}</p></>)}
+
+      {caseStudy.quote && (
+        <figure class="testimonial">
+          <blockquote>{caseStudy.quote}</blockquote>
+          <figcaption>{caseStudy.client}</figcaption>
+        </figure>
+      )}
+
+      {caseStudy.speaker && (
+        <p>
+          Foredragsholder:{' '}
+          <a href={`/foredragsholdere/${caseStudy.speaker.slug}/`}>{caseStudy.speaker.name}</a>
+        </p>
+      )}
+    </div>
+  </article>
+  <Cta />
+</BaseLayout>

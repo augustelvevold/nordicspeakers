@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Cta from '../../components/Cta.astro';
+import { breadcrumbList } from '../../lib/schema';
+import { getAllArticles } from '../../lib/queries';
+
+// TODO(pagination): add /blogg/side/[page]/ once posts exceed ~12
+// (docs/site-structure.md lists /blogg/ as paginated).
+const articles = await getAllArticles();
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Blogg', url: '/blogg/' },
+];
+
+const title = 'Blogg | Nordic Speakers';
+const description =
+  'Råd og innsikt om foredrag, arrangementer og hvordan du finner rett foredragsholder — fra Nordic Speakers.';
+const schema = [breadcrumbList(crumbs)];
+
+const fmt = (d: string) =>
+  new Date(d).toLocaleDateString('nb-NO', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <section class="section">
+    <div class="container">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1>Blogg</h1>
+      <p id="intro" class="lead">
+        Råd og innsikt om foredrag, arrangementer og hvordan du finner rett
+        foredragsholder.
+      </p>
+      {articles.length > 0 ? (
+        <div class="grid grid--cards">
+          {articles.map((a) => (
+            <article class="card">
+              <div class="card__body">
+                <p class="card__meta">
+                  <time datetime={a.publishedAt}>{fmt(a.publishedAt)}</time>
+                  {a.authorName && <> · {a.authorName}</>}
+                </p>
+                <h2 class="card__title"><a href={`/blogg/${a.slug}/`}>{a.title}</a></h2>
+                <p class="card__text">{a.excerpt}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p class="empty-state">Vi publiserer artikler fortløpende. Kom gjerne tilbake snart.</p>
+      )}
+    </div>
+  </section>
+  <Cta />
+</BaseLayout>

@@ -6,6 +6,6 @@ The to-do list for what to build next. Tick items as `[x]` when done; add notes 
 - [x] 2. Sanity studio + schemas, seed with the two speakers and 3–4 topics. ([content-model.md](content-model.md))
 - [x] 3. Templates: front page, speaker index/detail, topic index/detail.
 - [x] 4. Booking page + form endpoint, kontakt, om-oss, FAQ. ([site-structure.md](site-structure.md) § Conversion)
-- [ ] 5. Blog + case studies + testimonials templates.
+- [x] 5. Blog + case studies + testimonials templates. (Case studies + testimonials ship as templates with empty states — no fabricated content; client adds real ones.)
 - [ ] 6. sitemap/robots/llms.txt, OG image handling, 404, final Lighthouse pass. ([seo.md](seo.md) § Technical checklist)
 - [ ] 7. Cloudflare Pages deploy + Sanity webhook.

@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import SanityImage from '../../components/SanityImage.astro';
+import Cta from '../../components/Cta.astro';
+import { article as articleSchema, breadcrumbList } from '../../lib/schema';
+import { renderPortableText } from '../../lib/portableText';
+import { truncate } from '../../lib/text';
+import { getAllArticlesDetail, type ArticleDetail } from '../../lib/queries';
+
+export async function getStaticPaths() {
+  const articles = await getAllArticlesDetail();
+  return articles.map((a) => ({ params: { slug: a.slug }, props: { article: a } }));
+}
+
+interface Props {
+  article: ArticleDetail;
+}
+const { article } = Astro.props;
+
+const url = `/blogg/${article.slug}/`;
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Blogg', url: '/blogg/' },
+  { name: article.title, url },
+];
+
+const bodyHtml = renderPortableText(article.body);
+const fmt = (d: string) =>
+  new Date(d).toLocaleDateString('nb-NO', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const schema = [
+  articleSchema({
+    headline: article.title,
+    url,
+    datePublished: article.publishedAt,
+    dateModified: article.updatedAt,
+    description: article.excerpt,
+    image: article.image?.asset ? url : undefined,
+    author: article.authorName ? { name: article.authorName } : undefined,
+    type: 'BlogPosting',
+  }),
+  breadcrumbList(crumbs),
+];
+
+const title = truncate(`${article.title} | Nordic Speakers`, 60);
+const description = truncate(article.excerpt);
+---
+<BaseLayout title={title} description={description} type="article" schema={schema}>
+  <article class="section">
+    <div class="container narrow">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1>{article.title}</h1>
+      <p class="byline">
+        <time datetime={article.publishedAt}>{fmt(article.publishedAt)}</time>
+        {article.authorName && <> · {article.authorName}</>}
+      </p>
+      {article.image?.asset && (
+        <SanityImage image={article.image} width={760} loading="eager" class="article-hero" />
+      )}
+      <p id="intro" class="lead">{article.excerpt}</p>
+      {bodyHtml && <div class="prose" set:html={bodyHtml} />}
+      {article.topics && article.topics.length > 0 && (
+        <ul class="tag-list">
+          {article.topics.map((t) => (
+            <li><a class="tag" href={`/tema/${t.slug}/`}>{t.title}</a></li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </article>
+  <Cta />
+</BaseLayout>

@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Cta from '../../components/Cta.astro';
+import { breadcrumbList } from '../../lib/schema';
+import { getAllTestimonials } from '../../lib/queries';
+
+const testimonials = await getAllTestimonials();
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Referanser', url: '/referanser/' },
+];
+
+const title = 'Referanser | Nordic Speakers';
+const description =
+  'Hva kunder sier om foredragsholderne vi formidler og samarbeidet med Nordic Speakers.';
+const schema = [breadcrumbList(crumbs)];
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <section class="section">
+    <div class="container">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1>Referanser</h1>
+      <p id="intro" class="lead">
+        Hva kunder sier om foredragsholderne og samarbeidet med oss.
+      </p>
+      {testimonials.length > 0 ? (
+        <div class="testimonial-grid">
+          {testimonials.map((t) => (
+            <figure class="testimonial">
+              <blockquote>{t.quote}</blockquote>
+              <figcaption>
+                {[t.personName, t.personRole, t.company].filter(Boolean).join(', ')}
+                {t.speaker && (
+                  <> · <a href={`/foredragsholdere/${t.speaker.slug}/`}>{t.speaker.name}</a></>
+                )}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      ) : (
+        <p class="empty-state">
+          Vi henter inn referanser fra kundene våre. Ønsker du referanser allerede nå,
+          <a href="/kontakt/">ta gjerne kontakt</a>.
+        </p>
+      )}
+    </div>
+  </section>
+  <Cta />
+</BaseLayout>

@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Cta from '../../components/Cta.astro';
+import { breadcrumbList } from '../../lib/schema';
+import { getAllCaseStudies } from '../../lib/queries';
+
+const cases = await getAllCaseStudies();
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Kundesuksesser', url: '/kundesuksesser/' },
+];
+
+const title = 'Kundesuksesser | Nordic Speakers';
+const description =
+  'Historier fra arrangementer vi har bidratt til — utfordring, løsning og resultat med foredragsholderne vi formidler.';
+const schema = [breadcrumbList(crumbs)];
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <section class="section">
+    <div class="container">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1>Kundesuksesser</h1>
+      <p id="intro" class="lead">
+        Ekte historier fra arrangementer vi har bidratt til — fra utfordring til
+        resultat.
+      </p>
+      {cases.length > 0 ? (
+        <div class="grid grid--cards">
+          {cases.map((c) => (
+            <article class="card">
+              <div class="card__body">
+                <h2 class="card__title"><a href={`/kundesuksesser/${c.slug}/`}>{c.title}</a></h2>
+                <p class="card__meta">{c.client}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p class="empty-state">
+          Vi deler kundehistorier fortløpende. Ønsker du referanser allerede nå,
+          <a href="/kontakt/">ta gjerne kontakt</a>.
+        </p>
+      )}
+    </div>
+  </section>
+  <Cta />
+</BaseLayout>
