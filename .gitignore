@@ -1,0 +1,14 @@
+# Claude Code project config stays local (machine-specific permissions + hooks).
+# scripts/doc-reminder.mjs, which it wires up, IS committed.
+.claude/settings.json
+.claude/settings.local.json
+
+# Obsidian workspace state if docs/ is opened as a vault
+docs/.obsidian/
+
+# Build / deps / env (Astro scaffold will extend this)
+node_modules/
+dist/
+.astro/
+.env
+.env.*
