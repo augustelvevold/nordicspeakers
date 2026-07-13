@@ -6,9 +6,13 @@
 # Obsidian workspace state if docs/ is opened as a vault
 docs/.obsidian/
 
-# Build / deps / env (Astro scaffold will extend this)
+# Build / deps / env (node_modules/ and dist/ also match nested studio/ copies)
 node_modules/
 dist/
 .astro/
 .env
 .env.*
+!.env.example
+
+# Sanity Studio local runtime
+.sanity/
