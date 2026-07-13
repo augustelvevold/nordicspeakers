@@ -1,0 +1,26 @@
+---
+// Conversion band — primary "Book foredrag" + secondary "Kontakt oss", placed
+// near the foot of content templates (docs/site-structure.md § Conversion).
+// TODO(content): confirm the response-time promise with the client.
+interface Props {
+  heading?: string;
+  text?: string;
+}
+
+const {
+  heading = 'Klar til å booke et foredrag?',
+  text = 'Fortell oss kort om arrangementet, så finner vi en foredragsholder som passer. Vi svarer normalt innen én arbeidsdag.',
+} = Astro.props;
+---
+<section class="cta-band">
+  <div class="container cta-band__inner">
+    <div class="cta-band__copy">
+      <h2 class="cta-band__heading">{heading}</h2>
+      <p class="cta-band__text">{text}</p>
+    </div>
+    <p class="cta-band__actions">
+      <a href="/book-foredrag/" class="btn btn--primary btn--lg">Book foredrag</a>
+      <a href="/kontakt/" class="btn btn--ghost btn--lg">Kontakt oss</a>
+    </p>
+  </div>
+</section>

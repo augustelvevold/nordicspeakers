@@ -1,0 +1,31 @@
+---
+import SanityImage from './SanityImage.astro';
+import type { SpeakerCardData } from '../lib/queries';
+
+interface Props {
+  speaker: SpeakerCardData;
+}
+
+const { speaker } = Astro.props;
+const href = `/foredragsholdere/${speaker.slug}/`;
+---
+<article class="card speaker-card">
+  <a href={href} class="speaker-card__media" tabindex="-1" aria-hidden="true">
+    {speaker.image?.asset ? (
+      <SanityImage image={speaker.image} width={480} sizes="(min-width: 48rem) 22rem, 90vw" />
+    ) : (
+      <span class="speaker-card__placeholder">{speaker.name.charAt(0)}</span>
+    )}
+  </a>
+  <div class="card__body">
+    <h3 class="card__title"><a href={href}>{speaker.name}</a></h3>
+    <p class="card__text">{speaker.shortBio}</p>
+    {speaker.topics && speaker.topics.length > 0 && (
+      <ul class="tag-list">
+        {speaker.topics.map((t) => (
+          <li><a class="tag" href={`/tema/${t.slug}/`}>{t.title}</a></li>
+        ))}
+      </ul>
+    )}
+  </div>
+</article>

@@ -1,0 +1,25 @@
+---
+// Visible breadcrumb trail. The SAME crumb array is passed to
+// schema.breadcrumbList() by the page so the markup and JSON-LD always match
+// (docs/site-structure.md, docs/seo.md).
+import type { Crumb } from '../lib/schema';
+
+interface Props {
+  crumbs: Crumb[];
+}
+
+const { crumbs } = Astro.props;
+---
+<nav class="breadcrumbs" aria-label="Brødsmulesti">
+  <ol>
+    {crumbs.map((c, i) => (
+      <li>
+        {i < crumbs.length - 1 ? (
+          <a href={c.url}>{c.name}</a>
+        ) : (
+          <span aria-current="page">{c.name}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

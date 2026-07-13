@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SpeakerCard from '../../components/SpeakerCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Cta from '../../components/Cta.astro';
+import { breadcrumbList } from '../../lib/schema';
+import { getAllSpeakers } from '../../lib/queries';
+
+const speakers = await getAllSpeakers();
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Foredragsholdere', url: '/foredragsholdere/' },
+];
+
+const title = 'Foredragsholdere | Nordic Speakers';
+const description =
+  'Bla gjennom profesjonelle foredragsholdere til bedrifter, konferanser og organisasjoner i hele Norge. Finn og book rett navn for arrangementet.';
+const schema = [breadcrumbList(crumbs)];
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <section class="section">
+    <div class="container">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1>Foredragsholdere</h1>
+      <p id="intro" class="lead">
+        Her finner du foredragsholderne vi formidler — hver med sine spesialområder.
+        Utforsk profilene, se hvilke temaer de dekker, og send en uforpliktende
+        forespørsel når du har funnet en som passer.
+      </p>
+      {speakers.length > 0 ? (
+        <div class="grid grid--cards">
+          {speakers.map((s) => <SpeakerCard speaker={s} />)}
+        </div>
+      ) : (
+        <p>Ingen foredragsholdere er publisert ennå.</p>
+      )}
+    </div>
+  </section>
+  <Cta />
+</BaseLayout>

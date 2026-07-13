@@ -27,6 +27,8 @@ const props = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {/* Content images are served from the Sanity CDN (docs/seo.md). */}
+    <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
     {/* TODO(content): self-host primary font (woff2) + preload + font-display:swap (docs/seo.md). */}
     <SEO {...props} />
   </head>

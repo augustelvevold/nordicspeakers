@@ -1,0 +1,20 @@
+---
+import type { TopicCardData } from '../lib/queries';
+
+interface Props {
+  topic: TopicCardData;
+}
+
+const { topic } = Astro.props;
+const href = `/tema/${topic.slug}/`;
+const count = topic.speakerCount ?? 0;
+---
+<article class="card topic-card">
+  <div class="card__body">
+    <h3 class="card__title"><a href={href}>{topic.title}</a></h3>
+    <p class="card__text">{topic.intro}</p>
+    {count > 0 && (
+      <p class="card__meta">{count} {count === 1 ? 'foredragsholder' : 'foredragsholdere'}</p>
+    )}
+  </div>
+</article>

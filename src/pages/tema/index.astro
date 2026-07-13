@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TopicCard from '../../components/TopicCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Cta from '../../components/Cta.astro';
+import { breadcrumbList } from '../../lib/schema';
+import { getAllTopics } from '../../lib/queries';
+
+const topics = await getAllTopics();
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Temaer', url: '/tema/' },
+];
+
+const title = 'Temaer for foredrag | Nordic Speakers';
+const description =
+  'Utforsk temaene foredragsholderne dekker — fra ledelse og salg til motivasjon og entreprenørskap. Finn rett tema for ditt arrangement.';
+const schema = [breadcrumbList(crumbs)];
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <section class="section">
+    <div class="container">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1>Temaer</h1>
+      <p id="intro" class="lead">
+        Hvilket tema passer for ditt arrangement? Utforsk områdene foredragsholderne
+        våre dekker, og se hvem som holder foredrag innen hvert tema.
+      </p>
+      {topics.length > 0 ? (
+        <div class="grid grid--cards">
+          {topics.map((t) => <TopicCard topic={t} />)}
+        </div>
+      ) : (
+        <p>Ingen temaer er publisert ennå.</p>
+      )}
+    </div>
+  </section>
+  <Cta />
+</BaseLayout>

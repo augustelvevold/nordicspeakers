@@ -1,0 +1,34 @@
+---
+// Optimized <img> for a Sanity image: WebP/AVIF via ?auto=format, explicit
+// width/height (no layout shift), lazy by default, required alt (docs/seo.md).
+// Renders nothing when no asset is set, so callers can show a fallback.
+import { urlFor, refDimensions, type SanityImageValue } from '../lib/image';
+
+interface Props {
+  image?: SanityImageValue;
+  width?: number;
+  sizes?: string;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+}
+
+const { image, width = 600, sizes, loading = 'lazy', class: className } = Astro.props;
+const ref = image?.asset?._ref;
+const dims = refDimensions(ref);
+const height = dims ? Math.round(width * (dims.height / dims.width)) : undefined;
+const src = ref ? urlFor(image!).width(width).auto('format').url() : undefined;
+const src2x = ref ? urlFor(image!).width(width * 2).auto('format').url() : undefined;
+---
+{src && (
+  <img
+    src={src}
+    srcset={src2x ? `${src} 1x, ${src2x} 2x` : undefined}
+    width={width}
+    height={height}
+    sizes={sizes}
+    loading={loading}
+    decoding="async"
+    alt={image?.alt ?? ''}
+    class={className}
+  />
+)}

@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import SanityImage from '../../components/SanityImage.astro';
+import Cta from '../../components/Cta.astro';
+import { person, breadcrumbList } from '../../lib/schema';
+import { renderPortableText } from '../../lib/portableText';
+import { truncate } from '../../lib/text';
+import { urlFor } from '../../lib/image';
+import { getAllSpeakersDetail, type SpeakerDetail } from '../../lib/queries';
+
+export async function getStaticPaths() {
+  const speakers = await getAllSpeakersDetail();
+  return speakers.map((speaker) => ({ params: { slug: speaker.slug }, props: { speaker } }));
+}
+
+interface Props {
+  speaker: SpeakerDetail;
+}
+const { speaker } = Astro.props;
+
+const url = `/foredragsholdere/${speaker.slug}/`;
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Foredragsholdere', url: '/foredragsholdere/' },
+  { name: speaker.name, url },
+];
+
+// Dedupe the speaker's own site + social profiles for Person.sameAs.
+const sameAs = [speaker.externalUrl, ...(speaker.sameAs ?? [])].filter(
+  (v, i, a): v is string => Boolean(v) && a.indexOf(v) === i,
+);
+const imageUrl = speaker.image?.asset?._ref
+  ? urlFor(speaker.image).width(800).auto('format').url()
+  : undefined;
+
+const schema = [
+  person({
+    name: speaker.name,
+    url,
+    jobTitle: 'Foredragsholder',
+    image: imageUrl,
+    description: speaker.shortBio,
+    knowsAbout: speaker.topics?.map((t) => t.title),
+    sameAs,
+  }),
+  breadcrumbList(crumbs),
+];
+
+const bioHtml = renderPortableText(speaker.fullBio);
+const firstName = speaker.name.split(' ')[0];
+const title = `${speaker.name} — foredragsholder | Nordic Speakers`;
+const description = truncate(speaker.shortBio);
+---
+<BaseLayout title={title} description={description} type="profile" schema={schema}>
+  <article class="section">
+    <div class="container">
+      <Breadcrumbs crumbs={crumbs} />
+      <div class="speaker-head">
+        {speaker.image?.asset && (
+          <SanityImage image={speaker.image} width={320} loading="eager" class="speaker-head__img" />
+        )}
+        <div class="speaker-head__intro">
+          <h1>{speaker.name}</h1>
+          <p id="intro" class="lead">{speaker.shortBio}</p>
+          {speaker.topics && speaker.topics.length > 0 && (
+            <ul class="tag-list">
+              {speaker.topics.map((t) => (
+                <li><a class="tag" href={`/tema/${t.slug}/`}>{t.title}</a></li>
+              ))}
+            </ul>
+          )}
+          {speaker.externalUrl && (
+            <p class="speaker-head__link">
+              <a href={speaker.externalUrl} rel="noopener noreferrer" target="_blank">Egen nettside →</a>
+            </p>
+          )}
+        </div>
+      </div>
+
+      {bioHtml && <div class="prose" set:html={bioHtml} />}
+
+      {speaker.testimonials && speaker.testimonials.length > 0 && (
+        <section class="section-block">
+          <h2>Hva kundene sier</h2>
+          {speaker.testimonials.map((t) => (
+            <figure class="testimonial">
+              <blockquote>{t.quote}</blockquote>
+              <figcaption>{[t.personName, t.personRole, t.company].filter(Boolean).join(', ')}</figcaption>
+            </figure>
+          ))}
+        </section>
+      )}
+    </div>
+  </article>
+
+  <Cta heading={`Vil du booke ${speaker.name}?`} />
+
+  {/* Sticky mobile booking bar (docs/site-structure.md § Conversion). */}
+  <div class="mobile-cta">
+    <a href="/book-foredrag/" class="btn btn--primary">Book {firstName}</a>
+  </div>
+</BaseLayout>
