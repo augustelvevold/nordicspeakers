@@ -16,3 +16,6 @@ dist/
 
 # Sanity Studio local runtime
 .sanity/
+
+# Wrangler (Cloudflare) local state
+.wrangler/
