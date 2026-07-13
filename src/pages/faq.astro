@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Cta from '../components/Cta.astro';
+import { faqPage, breadcrumbList, type FaqItem } from '../lib/schema';
+
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Ofte stilte spørsmål', url: '/faq/' },
+];
+
+// Visible FAQ and FAQPage JSON-LD are built from the same array so they always
+// match exactly (docs/seo.md). TODO(content): utvid/juster med reelle svar
+// (særlig pris) sammen med kunden.
+const faqs: FaqItem[] = [
+  {
+    question: 'Hvordan booker jeg en foredragsholder?',
+    answer:
+      'Send oss en forespørsel via skjemaet på siden «Book foredrag», eller ta kontakt. Beskriv arrangementet kort, så foreslår vi passende foredragsholdere og gir et uforpliktende tilbud.',
+  },
+  {
+    question: 'Hva koster et foredrag?',
+    answer:
+      'Prisen varierer med foredragsholder, format og lengde, samt reise og eventuelle tillegg. Fortell oss om arrangementet, så gir vi deg et konkret tilbud.',
+  },
+  {
+    question: 'Hvor raskt får jeg svar?',
+    answer: 'Vi svarer normalt på henvendelser innen én arbeidsdag.',
+  },
+  {
+    question: 'Kan foredraget holdes digitalt?',
+    answer:
+      'Ja. Mange av foredragsholderne holder både fysiske og digitale foredrag, og kan tilpasse formatet til arrangementet.',
+  },
+  {
+    question: 'Hvor i landet dekker dere?',
+    answer:
+      'Vi formidler foredragsholdere til arrangementer i hele Norge, og kan også bistå med digitale foredrag uansett hvor dere er.',
+  },
+];
+
+const title = 'Ofte stilte spørsmål | Nordic Speakers';
+const description =
+  'Svar på vanlige spørsmål om å booke foredragsholder gjennom Nordic Speakers — pris, prosess, digitale foredrag og svartid.';
+const schema = [faqPage(faqs), breadcrumbList(crumbs)];
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <section class="section">
+    <div class="container narrow">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1>Ofte stilte spørsmål</h1>
+      <p id="intro" class="lead">
+        Her finner du svar på de vanligste spørsmålene om å booke en foredragsholder
+        hos oss. Finner du ikke svaret, ta gjerne kontakt.
+      </p>
+      <section class="faq">
+        {faqs.map((f) => (
+          <div class="faq__item">
+            <h2 class="faq__q">{f.question}</h2>
+            <p class="faq__a">{f.answer}</p>
+          </div>
+        ))}
+      </section>
+    </div>
+  </section>
+  <Cta />
+</BaseLayout>

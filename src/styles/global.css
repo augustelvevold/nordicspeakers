@@ -598,6 +598,172 @@ address {
   }
 }
 
+/* ---- Container width variant ----------------------------------------- */
+
+.container.narrow {
+  max-width: 46rem;
+}
+
+/* ---- Forms ----------------------------------------------------------- */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-block: var(--space-4);
+}
+
+.form__row {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 40rem) {
+  .form__row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.field label {
+  font-weight: 600;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 1px;
+  border-color: var(--color-primary);
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.form__note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.form button[type="submit"] {
+  align-self: start;
+}
+
+/* Honeypot — off-screen, never shown to humans. */
+.hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Status / validation messages (aria-live region). */
+.form-status {
+  margin: 0;
+}
+
+.form-status:empty {
+  display: none;
+}
+
+.form-status--ok {
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+
+.form-status--error {
+  padding: var(--space-3);
+  background: #fdecec;
+  border-left: 4px solid #b3261e;
+  border-radius: var(--radius);
+  color: #7a1a15;
+}
+
+/* ---- Contact layout -------------------------------------------------- */
+
+.contact-grid {
+  display: grid;
+  gap: var(--space-5);
+}
+
+@media (min-width: 52rem) {
+  .contact-grid {
+    grid-template-columns: 1.6fr 1fr;
+    align-items: start;
+  }
+}
+
+.contact-info {
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+}
+
+.contact-info h2 {
+  margin-top: 0;
+  font-size: var(--step-1);
+}
+
+/* ---- Footer navigation ----------------------------------------------- */
+
+.site-footer__name {
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-fg);
+}
+
+.site-footer__nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer__nav a {
+  color: var(--color-fg);
+  text-decoration: none;
+}
+
+.site-footer__nav a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.site-footer__legal {
+  margin-top: var(--space-3);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.site-footer__legal p {
+  margin: 0;
+}
+
 /* ---- Motion preferences ---------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import BookingForm from '../components/BookingForm.astro';
+import { breadcrumbList } from '../lib/schema';
+import { getAllSpeakers, getAllTopics } from '../lib/queries';
+
+const [speakers, topics] = await Promise.all([getAllSpeakers(), getAllTopics()]);
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Kontakt', url: '/kontakt/' },
+];
+
+const title = 'Kontakt oss | Nordic Speakers';
+const description =
+  'Kontakt Nordic Speakers for å booke en foredragsholder eller stille spørsmål. Vi svarer normalt innen én arbeidsdag.';
+const schema = [breadcrumbList(crumbs)];
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <section class="section">
+    <div class="container">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1>Kontakt oss</h1>
+      <p id="intro" class="lead">
+        Lurer du på noe, eller vil du booke en foredragsholder? Send oss en
+        melding, så tar vi kontakt — normalt innen én arbeidsdag.
+      </p>
+      <div class="contact-grid">
+        <div>
+          <BookingForm speakers={speakers} topics={topics} submitLabel="Send melding" />
+        </div>
+        <aside class="contact-info">
+          <h2>Kontaktinformasjon</h2>
+          {/* TODO(content): reelle kontaktdetaljer fra Sanity siteSettings. */}
+          <p><strong>E-post:</strong> <span>TODO(content): e-postadresse</span></p>
+          <p><strong>Telefon:</strong> <span>TODO(content): telefonnummer</span></p>
+          <p>
+            Vi formidler foredragsholdere til bedrifter, konferanser og
+            organisasjoner i hele Norge.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

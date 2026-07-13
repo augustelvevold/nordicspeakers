@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Cta from '../components/Cta.astro';
+import { breadcrumbList } from '../lib/schema';
+
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Om oss', url: '/om-oss/' },
+];
+
+const title = 'Om oss | Nordic Speakers';
+const description =
+  'Nordic Speakers formidler profesjonelle foredragsholdere til bedrifter, konferanser og organisasjoner i hele Norge.';
+const schema = [breadcrumbList(crumbs)];
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <section class="section">
+    <div class="container">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1>Om Nordic Speakers</h1>
+      <p id="intro" class="lead">
+        Nordic Speakers formidler profesjonelle foredragsholdere til bedrifter,
+        konferanser og organisasjoner over hele Norge. Vi hjelper deg å finne rett
+        stemme for arrangementet ditt.
+      </p>
+      <div class="prose">
+        <p>
+          Et godt foredrag kan sette varige spor — det inspirerer, gir ny innsikt
+          og skaper samtaler som varer lenge etter at applausen har lagt seg. Vi
+          gjør jobben med å finne og booke den rette foredragsholderen enkel.
+        </p>
+        {/* TODO(content): reell historikk, team og profil for Nordic Speakers. */}
+        <h2>Slik jobber vi</h2>
+        <ol>
+          <li>Du beskriver arrangementet og hva dere ønsker å oppnå.</li>
+          <li>Vi foreslår foredragsholdere som passer, og gir et uforpliktende tilbud.</li>
+          <li>Vi hjelper til med det praktiske fram til foredraget er i havn.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+  <Cta />
+</BaseLayout>

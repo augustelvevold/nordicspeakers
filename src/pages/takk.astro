@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Post-submit landing for the no-JS form path (functions/api/book.ts redirects
+// here). Not indexed.
+const title = 'Takk for henvendelsen | Nordic Speakers';
+const description = 'Vi har mottatt henvendelsen din og svarer normalt innen én arbeidsdag.';
+---
+<BaseLayout title={title} description={description} noindex={true}>
+  <section class="section">
+    <div class="container narrow">
+      <h1>Takk for henvendelsen!</h1>
+      <p class="lead">
+        Vi har mottatt forespørselen din og svarer normalt innen én arbeidsdag.
+      </p>
+      <p><a class="btn btn--primary btn--lg" href="/">Tilbake til forsiden</a></p>
+    </div>
+  </section>
+</BaseLayout>

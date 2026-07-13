@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import BookingForm from '../components/BookingForm.astro';
+import { breadcrumbList } from '../lib/schema';
+import { getAllSpeakers, getAllTopics } from '../lib/queries';
+
+const [speakers, topics] = await Promise.all([getAllSpeakers(), getAllTopics()]);
+const crumbs = [
+  { name: 'Hjem', url: '/' },
+  { name: 'Book foredrag', url: '/book-foredrag/' },
+];
+
+const title = 'Book foredrag | Nordic Speakers';
+const description =
+  'Send en uforpliktende forespørsel om å booke en foredragsholder til ditt arrangement. Vi svarer normalt innen én arbeidsdag.';
+const schema = [breadcrumbList(crumbs)];
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <section class="section">
+    <div class="container narrow">
+      <Breadcrumbs crumbs={crumbs} />
+      <h1>Book foredrag</h1>
+      <p id="intro" class="lead">
+        Fortell oss kort om arrangementet, så finner vi en foredragsholder som
+        passer — og gir deg et uforpliktende tilbud. Vi svarer normalt innen én
+        arbeidsdag.
+      </p>
+      <BookingForm speakers={speakers} topics={topics} submitLabel="Send forespørsel" />
+    </div>
+  </section>
+</BaseLayout>

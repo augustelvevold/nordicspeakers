@@ -27,6 +27,7 @@ URL scheme, internal-linking rules, and the conversion surfaces. Read before add
 /referanser/                    Testimonials
 /faq/
 /kontakt/
+/takk/                          Post-submit confirmation (noindex)
 ```
 
 Rules:
@@ -44,6 +45,6 @@ Rules:
 ## Conversion
 
 - Primary CTA everywhere: "Book foredrag" → `/book-foredrag/`. Secondary: "Kontakt oss".
-- Booking page: short form (name, company, email, phone, topic/speaker select, date?, message). Static-friendly submission (Cloudflare Pages Functions endpoint or a form service — decide at implementation, no heavy client JS).
+- Booking page: short form (name, company, email, phone, topic/speaker select, date?, message). **Decided:** posts to a Cloudflare Pages Function ([functions/api/book.ts](../functions/api/book.ts)) — progressive enhancement (works as a plain POST → 303 `/takk/`; a small island upgrades to inline async submit). Honeypot spam field. Delivery is env-configured (Resend: `RESEND_API_KEY`, `BOOKING_TO_EMAIL`) — set in Cloudflare Pages before go-live. Reused on `/kontakt/`.
 - Trust elements near every CTA: testimonials, client logos, response-time promise.
 - Sticky/bottom CTA on mobile speaker pages.
