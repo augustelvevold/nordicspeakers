@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 // sitemap resolve to absolute https URLs. Trailing slashes + static output
 // match the URL scheme in docs/site-structure.md and the stack in CLAUDE.md.
 export default defineConfig({
-  site: 'https://foredragsholdere.no',
+  site: 'https://nordicspeakers.no',
   output: 'static',
   trailingSlash: 'always',
   integrations: [sitemap()],

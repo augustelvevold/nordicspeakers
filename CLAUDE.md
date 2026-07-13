@@ -1,4 +1,4 @@
-# Foredragsholdere.no — project context
+# Nordic Speakers (nordicspeakers.no) — project context
 
 ## 🎯 Goal — the north star
 
@@ -8,7 +8,7 @@ Build **Norway's leading platform for professional speakers** ("foredragsholdere
 
 End every reply with a final line in exactly this form, nothing after it:
 
-`🐤 kanari-v1 · docs: <comma-list of docs read this turn, or none>`
+`🐤 kanari-v2 · docs: <comma-list of docs read this turn, or none>`
 
 - The **token** proves this file is in context and being followed. If it's **missing or differs**, CLAUDE.md has dropped out of context (e.g. summarized away) or the reply is being confabulated — distrust it and re-read this file. Bump the token (`-v2`, …) on any material edit to this file.
 - The **docs receipt** lists which `docs/*.md` were actually read this turn (e.g. `docs: seo, content-model`), or `none`. Cross-check it against the **Docs routing** table below: if the task clearly sits in a documented area but the receipt says `none`, the relevant doc was skipped — call it out.

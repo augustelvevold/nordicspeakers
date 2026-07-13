@@ -7,12 +7,12 @@
 // (docs/content-model.md).
 
 export const SITE = {
-  name: 'Foredragsholdere.no',
+  name: 'Nordic Speakers',
   /** Bare origin — used to build absolute canonical, OG and sitemap URLs. */
-  url: 'https://foredragsholdere.no',
+  url: 'https://nordicspeakers.no',
   /** Norwegian one-liner; feeds default meta + Organization schema. */
   description:
-    'Foredragsholdere.no formidler profesjonelle foredragsholdere til bedrifter, konferanser og organisasjoner i hele Norge.',
+    'Nordic Speakers formidler profesjonelle foredragsholdere til bedrifter, konferanser og organisasjoner i hele Norge.',
   /** Open Graph locale. */
   locale: 'nb_NO',
   /** <html lang> value. */

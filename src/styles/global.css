@@ -7,15 +7,15 @@
  */
 
 :root {
-  /* Palette — checked for WCAG 2.1 AA contrast on white. */
+  /* Palette — brand green + mint; checked for WCAG 2.1 AA contrast. */
   --color-bg: #ffffff;
-  --color-surface: #f6f7f9;
+  --color-surface: #e1f5ee;   /* brand mint — section/footer surfaces */
   --color-fg: #16181d;        /* ~15:1 on white */
-  --color-muted: #52565e;     /* ~7:1 on white  */
-  --color-primary: #1d4ed8;   /* white text ~5.8:1 */
-  --color-primary-hover: #1e40af;
-  --color-border: #e3e6ea;
-  --color-focus: #1d4ed8;
+  --color-muted: #52565e;     /* ~7:1 on white / ~6.6:1 on mint */
+  --color-primary: #0f6e56;   /* brand green (CTA); white text ~6.2:1 */
+  --color-primary-hover: #0c5845;
+  --color-border: #cfe6dc;    /* mint-tinted hairline */
+  --color-focus: #0f6e56;
 
   /* Fluid type scale. */
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;

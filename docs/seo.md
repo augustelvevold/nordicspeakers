@@ -10,7 +10,7 @@ A single `<SEO />` component used in the base layout. Props-driven. Emits:
 - Canonical URL (every page sets a self-referencing canonical).
 - Open Graph (og:title, og:description, og:image, og:type, og:locale=nb_NO) + Twitter Card (summary_large_image).
 - JSON-LD via a `schema` prop accepting one or more objects. Common builders live in `src/lib/schema.ts`:
-  - `Organization` (site-wide, on front page): Foredragsholdere.no, logo, contactPoint, sameAs.
+  - `Organization` (site-wide, on front page): Nordic Speakers, logo, contactPoint, sameAs.
   - `Person` for each speaker (name, jobTitle, url, image, knowsAbout, sameAs → their own site).
   - `Event` for events (name, startDate, location, performer → Person, offers if applicable).
   - `Article` / `BlogPosting` for blog posts (headline, author, datePublished, dateModified, image).
