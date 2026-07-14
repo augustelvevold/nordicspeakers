@@ -7,4 +7,6 @@ export default defineCliConfig({
     projectId: process.env.SANITY_STUDIO_PROJECT_ID,
     dataset: process.env.SANITY_STUDIO_DATASET ?? 'production',
   },
+  // Hosted Studio at https://nordicspeakers.sanity.studio (non-interactive deploy).
+  studioHost: 'nordicspeakers',
 });
