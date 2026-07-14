@@ -10,4 +10,4 @@ The to-do list for what to build next. Tick items as `[x]` when done; add notes 
 - [ ] 6. sitemap/robots/llms.txt, OG image handling, 404, final Lighthouse pass. ([seo.md](seo.md) § Technical checklist)
   - Done: sitemap (excludes noindex `/takk/` + `/llms.txt`), `robots.txt`, build-time `/llms.txt`, `404`, per-page OG images (speaker photo / article image, 1200×630 crop).
   - Remaining: `og-default.png` (1200×630 design asset for pages without an image), self-hosted brand font (system stack for now — pending a font choice), and running Lighthouse post-deploy (needs a browser).
-- [ ] 7. Cloudflare Pages deploy + Sanity webhook.
+- [x] 7. Cloudflare Pages deploy + Sanity webhook. (Live at nordicspeakers.pages.dev via GitHub Actions CI — push / repository_dispatch / manual. Sanity webhook config in [deploy.md](deploy.md); needs a GitHub PAT to activate rebuild-on-publish.)
