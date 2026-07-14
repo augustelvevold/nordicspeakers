@@ -43,6 +43,18 @@ So the client publishing in Studio updates the live site:
    - Payload: `{"event_type": "sanity-publish"}`
    - Dataset `production`, trigger on create/update/delete
 
+## Studio (CMS) — where content is edited
+
+Deployed (Sanity **v6**) at **https://nordicspeakers.sanity.studio/**. Editors log
+in there and create/publish documents — each becomes a page. No code involved.
+
+- Invite editors: manage.sanity.io → project `nordicspeakers` → **Members**.
+- Redeploy the Studio after schema changes: `cd studio && npx sanity deploy`
+  (host + appId pinned in [studio/sanity.cli.ts](../studio/sanity.cli.ts), so it's
+  non-interactive). The Studio is separate from the site build — deploying it does
+  not touch the live website.
+- Publishing content triggers a site rebuild once the webhook above is wired.
+
 ## Booking-form email delivery
 
 Runtime secrets on the **Pages project** (not GitHub) — the function reads them at
