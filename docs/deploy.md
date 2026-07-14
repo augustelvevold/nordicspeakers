@@ -1,69 +1,82 @@
-# Deploy — Cloudflare Pages + Sanity webhook
+# Deploy — Cloudflare Pages via GitHub Actions
 
-Host is **Cloudflare Pages** (not Vercel): the booking endpoint
-[functions/api/book.ts](../functions/api/book.ts) is a Cloudflare Pages Function.
-GitHub push → Cloudflare build → deploy. Publishing in Sanity triggers a rebuild
-via a deploy hook.
+Host is **Cloudflare Pages**, project **`nordicspeakers`** (account: Elvevold),
+created with `wrangler`. Live at https://nordicspeakers.pages.dev/. The booking
+endpoint [functions/api/book.ts](../functions/api/book.ts) is a Pages Function,
+deployed alongside the static site.
 
-Repo: `github.com/augustelvevold/nordicspeakers`, branch `main`.
+## How deploys happen (CI)
 
-## 1. Connect the repo (Cloudflare dashboard)
+[.github/workflows/deploy.yml](../.github/workflows/deploy.yml) builds and
+deploys on:
 
-dash.cloudflare.com → **Workers & Pages** → **Create** → **Pages** →
-**Connect to Git** → pick `augustelvevold/nordicspeakers`.
+- **push to `main`** — every code change
+- **`repository_dispatch` (`sanity-publish`)** — content rebuild from a Sanity webhook
+- **manual** — the "Run workflow" button
 
-Build settings:
+The job runs `npm ci`, `npm run build` (fetches Sanity content), then
+`wrangler pages deploy dist` (ships `dist/` **and** `functions/`).
 
-| Setting | Value |
-|---|---|
-| Framework preset | Astro (or None) |
-| Build command | `npm run build` |
-| Build output directory | `dist` |
-| Root directory | `/` (repo root) |
+> The dashboard "Connect to Git" flow funnels into the Workers importer (wants a
+> PR/wrangler config) — we don't use it. CI via the Action is the source of truth.
 
-The `functions/` directory is auto-detected — no config needed for `/api/book`.
-The `studio/` workspace is not part of the site build.
+### Required GitHub secrets
 
-## 2. Environment variables (Pages → Settings → Environment variables)
+Repo → Settings → Secrets and variables → Actions:
 
-Set for **Production** (and Preview if used):
-
-| Variable | Value | Needed for |
+| Secret | What | How |
 |---|---|---|
-| `NODE_VERSION` | `22` | Astro 7 requires Node ≥ 22.12 |
-| `PUBLIC_SANITY_PROJECT_ID` | `2xo7pdy5` | build (content) |
-| `PUBLIC_SANITY_DATASET` | `production` | build |
-| `PUBLIC_SANITY_API_VERSION` | `2024-01-01` | build |
-| `SANITY_API_TOKEN` | *(Viewer token)* | **build — REQUIRED** (private dataset) |
-| `RESEND_API_KEY` | *(Resend key)* | booking form delivery |
-| `BOOKING_TO_EMAIL` | *(inbox)* | booking form delivery |
-| `BOOKING_FROM_EMAIL` | *(verified sender)* | booking form (optional) |
+| `CLOUDFLARE_API_TOKEN` | deploy auth | CF → My Profile → API Tokens → Custom → **Account · Cloudflare Pages · Edit** |
+| `SANITY_API_TOKEN` | build reads the private dataset | Sanity Viewer token (same value as local `.env`) |
 
-> **Critical:** without `SANITY_API_TOKEN` the build still succeeds but the site
-> is empty (tokenless reads of a private dataset return nothing). Set it before
-> the first deploy, or redeploy after adding it.
+Non-secret build config (`PUBLIC_SANITY_*`) and the CF `accountId` are baked into
+the workflow file.
 
-## 3. Rebuild on publish (Sanity → Cloudflare)
+## Rebuild on publish (Sanity → GitHub → deploy)
 
-1. Cloudflare Pages → Settings → **Deploy hooks** → create one → copy the URL.
-2. manage.sanity.io → project `2xo7pdy5` → **API** → **Webhooks** → **Create webhook**:
-   - URL: the deploy hook URL
-   - Trigger on: create / update / delete
-   - Dataset: `production`
-   - (Optional) filter to published docs only
+So the client publishing in Studio updates the live site:
 
-## 4. Custom domain
+1. Create a GitHub **fine-grained PAT** for this repo with **Contents: Read and write**.
+2. manage.sanity.io → project `2xo7pdy5` → **API → Webhooks → Create**:
+   - URL: `https://api.github.com/repos/augustelvevold/nordicspeakers/dispatches`
+   - Method **POST**; Headers: `Authorization: Bearer <PAT>`, `Accept: application/vnd.github+json`
+   - Payload: `{"event_type": "sanity-publish"}`
+   - Dataset `production`, trigger on create/update/delete
+
+## Booking-form email delivery
+
+Runtime secrets on the **Pages project** (not GitHub) — the function reads them at
+request time:
+
+```bash
+npx wrangler pages secret put RESEND_API_KEY --project-name nordicspeakers
+npx wrangler pages secret put BOOKING_TO_EMAIL --project-name nordicspeakers
+# optional: BOOKING_FROM_EMAIL (a verified sender)
+```
+
+Until set, the form validates + accepts but does not email (no error shown).
+
+## Custom domain
 
 Pages → **Custom domains** → add `nordicspeakers.no` and follow the DNS steps.
 
-## Local form testing (optional)
+## Manual deploy (fallback)
 
-`astro dev` does not run `functions/`. To test the booking POST end-to-end
-locally: `npm run build` then `npx wrangler pages dev dist` (needs a Cloudflare
-login). In normal `astro dev` the form UI works but the POST 404s — expected.
+From the repo **root** (not `studio/`):
 
-## Still outstanding (see roadmap step 6)
+```bash
+npm run build
+npx wrangler pages deploy dist --project-name nordicspeakers --branch main --commit-dirty=true
+```
+
+## Local form testing
+
+`astro dev` does not run `functions/`. To exercise the booking POST end-to-end:
+`npm run build` then `npx wrangler pages dev dist`. In plain `astro dev` the form
+UI works but the POST 404s — expected.
+
+## Still outstanding (roadmap step 6)
 
 - `public/og-default.png` — 1200×630 share image for pages without a photo.
 - Self-hosted brand font (system stack for now).
-- Run Lighthouse against the deployed URL (target ≥ 95).
+- Lighthouse pass against the live URL (target ≥ 95).
