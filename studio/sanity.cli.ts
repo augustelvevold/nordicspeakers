@@ -9,4 +9,6 @@ export default defineCliConfig({
   },
   // Hosted Studio at https://nordicspeakers.sanity.studio (non-interactive deploy).
   studioHost: 'nordicspeakers',
+  // Sanity v6 application id — pinned so deploys don't prompt.
+  deployment: { appId: 'cxggeslhmi1hw0uiuuuik33k' },
 });
