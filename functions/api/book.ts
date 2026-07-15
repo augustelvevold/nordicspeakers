@@ -55,7 +55,13 @@ export function validateBooking(
 }
 
 async function deliver(input: BookingInput, env: Env): Promise<void> {
-  if (!env.RESEND_API_KEY || !env.BOOKING_TO_EMAIL) return; // not configured yet
+  if (!env.RESEND_API_KEY || !env.BOOKING_TO_EMAIL) {
+    // Delivery not configured (pre-go-live, or a misconfigured deploy). Log it so a
+    // submission never vanishes without a trace; the caller still acknowledges the
+    // visitor. Visible via `wrangler pages deployment tail` / Pages → Functions logs.
+    console.warn('Booking delivery skipped: RESEND_API_KEY / BOOKING_TO_EMAIL not set.');
+    return;
+  }
   const text = [
     `Navn: ${input.name}`,
     `E-post: ${input.email}`,
@@ -69,7 +75,7 @@ async function deliver(input: BookingInput, env: Env): Promise<void> {
     .filter(Boolean)
     .join('\n');
 
-  await fetch('https://api.resend.com/emails', {
+  const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${env.RESEND_API_KEY}`,
@@ -83,6 +89,15 @@ async function deliver(input: BookingInput, env: Env): Promise<void> {
       text,
     }),
   });
+
+  // Resend returns 200 + { id } on success. Anything else — invalid API key,
+  // an unverified `from` domain (the usual first-setup failure), a rejected
+  // payload — must NOT be swallowed: throw so onRequestPost logs it instead of
+  // dropping the lead silently while the visitor sees a success message.
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    throw new Error(`Resend responded ${res.status}: ${detail.slice(0, 500)}`);
+  }
 }
 
 function wantsJson(request: Request): boolean {
@@ -151,8 +166,11 @@ export async function onRequestPost(context: {
 
   try {
     await deliver(result.value, env);
-  } catch {
-    // Never leak provider errors to the visitor; still acknowledge receipt.
+  } catch (err) {
+    // Never leak provider errors to the visitor — still acknowledge receipt — but
+    // log so a failed delivery is diagnosable in the function logs rather than
+    // lost without a trace (`wrangler pages deployment tail`, or Pages → Functions).
+    console.error('Booking delivery failed', err);
   }
   return done(request);
 }
