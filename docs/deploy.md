@@ -40,8 +40,13 @@ So the client publishing in Studio updates the live site:
 2. manage.sanity.io → project `2xo7pdy5` → **API → Webhooks → Create**:
    - URL: `https://api.github.com/repos/augustelvevold/nordicspeakers/dispatches`
    - Method **POST**; Headers: `Authorization: Bearer <PAT>`, `Accept: application/vnd.github+json`
-   - Payload: `{"event_type": "sanity-publish"}`
+   - Filter: `!(_id in path("drafts.**"))` — published docs only (no draft-spam rebuilds)
+   - Projection (payload): `{"event_type": "sanity-publish"}`
    - Dataset `production`, trigger on create/update/delete
+
+> **Token in use:** fine-grained PAT `Sanity rebuild – nordicspeakers`, **expires 15 June 2027**.
+> Rotate before then — regenerate the PAT and update the webhook's `Authorization` header —
+> or the auto-rebuild silently stops.
 
 ## Studio (CMS) — where content is edited
 
