@@ -1,0 +1,33 @@
+name: Token expiry reminder
+
+# Opens a GitHub issue when the Sanity→GitHub rebuild PAT is ~a month from
+# expiring, so auto-rebuild-on-publish doesn't silently die. Runs monthly; the
+# job no-ops until it's within the window. Manual run via "Run workflow".
+on:
+  schedule:
+    - cron: '0 9 1 * *' # 09:00 UTC on the 1st of each month
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remind if the rebuild PAT is expiring soon
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          EXPIRY="2027-06-15"   # PAT "Sanity rebuild – nordicspeakers"
+          days=$(( ( $(date -u -d "$EXPIRY" +%s) - $(date -u +%s) ) / 86400 ))
+          echo "Days until PAT expiry: $days"
+          if [ "$days" -le 30 ] && [ "$days" -ge -14 ]; then
+            title="Rotate Sanity rebuild PAT (expires ${EXPIRY})"
+            if [ "$(gh issue list --state open --search "\"${title}\" in:title" --json number --jq 'length')" = "0" ]; then
+              gh issue create --title "$title" --body \
+                "The fine-grained PAT \`Sanity rebuild – nordicspeakers\` used by the Sanity → GitHub rebuild webhook expires **${EXPIRY}** (~${days} days). Regenerate it and update the Sanity webhook's \`Authorization\` header, or auto-rebuild-on-publish stops silently. See docs/deploy.md."
+            else
+              echo "Reminder issue already open — skipping."
+            fi
+          fi
