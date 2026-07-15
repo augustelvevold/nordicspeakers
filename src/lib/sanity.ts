@@ -22,4 +22,12 @@ export const sanityClient = createClient({
   apiVersion,
   token,
   useCdn: !token, // CDN for public/tokenless reads; live API when a token is set
+  // Published content only — never build drafts. A token (needed for a private
+  // dataset) otherwise makes drafts.** visible, which leaks unpublished docs into
+  // production, collides draft+published on the same slug, and — because drafts
+  // routinely reference not-yet-published docs — resolves those refs to null and
+  // crashes the static build. This mirrors the Sanity rebuild webhook's own
+  // `!(_id in path("drafts.**"))` filter (docs/deploy.md), so the build reads
+  // exactly what triggers it.
+  perspective: 'published',
 });

@@ -49,18 +49,23 @@ export interface TopicDetail {
 
 // ---- Projections -------------------------------------------------------------
 
+// `refs[defined(@->_id)]->` drops references whose target no longer resolves
+// (a topic/testimonial the editor deleted while a speaker still points at it).
+// Without the filter, `->` yields a null array element and the templates' .map
+// crashes the whole build. perspective:'published' (see sanity.ts) already keeps
+// drafts out; this guards dangling refs among published docs too.
 const SPEAKER_CARD = `{
   _id, name, "slug": slug.current, shortBio, featured,
   image{alt, asset},
-  "topics": topics[]->{ "title": title, "slug": slug.current }
+  "topics": topics[defined(@->_id)]->{ "title": title, "slug": slug.current }
 }`;
 
 const SPEAKER_DETAIL = `{
   _id, name, "slug": slug.current, shortBio, featured, externalUrl, sameAs,
   image{alt, asset},
   fullBio,
-  "topics": topics[]->{ "title": title, "slug": slug.current },
-  "testimonials": testimonials[]->{ quote, personName, personRole, company }
+  "topics": topics[defined(@->_id)]->{ "title": title, "slug": slug.current },
+  "testimonials": testimonials[defined(@->_id)]->{ quote, personName, personRole, company }
 }`;
 
 const TOPIC_CARD = `{
@@ -150,7 +155,7 @@ const ARTICLE_DETAIL = `{
   title, "slug": slug.current, excerpt, publishedAt, updatedAt,
   "image": mainImage{alt, asset},
   body,
-  "topics": topics[]->{ "title": title, "slug": slug.current },
+  "topics": topics[defined(@->_id)]->{ "title": title, "slug": slug.current },
   "authorName": author->name
 }`;
 

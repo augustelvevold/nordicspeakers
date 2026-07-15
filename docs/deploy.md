@@ -17,6 +17,13 @@ deploys on:
 The job runs `npm ci`, `npm run build` (fetches Sanity content), then
 `wrangler pages deploy dist` (ships `dist/` **and** `functions/`).
 
+The build reads **published content only** (`perspective: 'published'` in
+[src/lib/sanity.ts](../src/lib/sanity.ts)), mirroring the webhook filter below.
+The `SANITY_API_TOKEN` grants access to the private dataset but would otherwise
+also expose `drafts.**`; without the perspective, an in-progress draft that
+references a not-yet-published doc resolves to `null` and crashes the static
+build — poisoning *every* rebuild until that draft is published or discarded.
+
 > The dashboard "Connect to Git" flow funnels into the Workers importer (wants a
 > PR/wrangler config) — we don't use it. CI via the Action is the source of truth.
 
