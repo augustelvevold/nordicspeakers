@@ -1,4 +1,5 @@
 import { createClient } from '@sanity/client';
+import { deepTrim } from './normalize';
 
 // Read-only client for build-time content fetching (static output). PUBLIC_ vars
 // come from .env (see .env.example); the projectId is not secret.
@@ -16,7 +17,7 @@ if (!projectId) {
   );
 }
 
-export const sanityClient = createClient({
+const client = createClient({
   projectId,
   dataset,
   apiVersion,
@@ -31,3 +32,14 @@ export const sanityClient = createClient({
   // exactly what triggers it.
   perspective: 'published',
 });
+
+// Trim every string in every query result at the boundary (see normalize.ts).
+// With a non-technical editor, stray whitespace is a certainty, and a single
+// trailing space silently breaks a mailto:/tel:/URL built from the value.
+// Wrapping fetch here covers all current and future queries — no query or page
+// ever has to remember to trim, and there's no way to bypass it.
+const rawFetch = client.fetch.bind(client) as (...args: unknown[]) => Promise<unknown>;
+client.fetch = ((...args: unknown[]) =>
+  rawFetch(...args).then(deepTrim)) as typeof client.fetch;
+
+export const sanityClient = client;
