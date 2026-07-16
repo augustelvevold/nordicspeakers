@@ -200,3 +200,34 @@ export function getAllTestimonials() {
     `*[_type=="testimonial"]|order(_createdAt desc)${TESTIMONIAL}`,
   );
 }
+
+// ---- Site settings (singleton) ----------------------------------------------
+
+export interface SiteSettings {
+  orgName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  socialLinks?: string[];
+}
+
+/** The `siteSettings` singleton, or null if it isn't published yet. String
+ *  fields are trimmed here — editors occasionally leave a trailing space, which
+ *  would break a `mailto:`/`tel:` href built from the raw value. */
+export async function getSiteSettings(): Promise<SiteSettings | null> {
+  const s = await sanityClient.fetch<SiteSettings | null>(
+    `*[_type=="siteSettings"][0]{ orgName, email, phone, address, socialLinks }`,
+  );
+  if (!s) return null;
+  const trim = (v?: string) => {
+    const t = v?.trim();
+    return t ? t : undefined;
+  };
+  return {
+    orgName: trim(s.orgName),
+    email: trim(s.email),
+    phone: trim(s.phone),
+    address: trim(s.address),
+    socialLinks: s.socialLinks?.map((u) => u.trim()).filter(Boolean),
+  };
+}

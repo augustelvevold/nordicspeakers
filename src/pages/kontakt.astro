@@ -3,9 +3,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import BookingForm from '../components/BookingForm.astro';
 import { breadcrumbList } from '../lib/schema';
-import { getAllSpeakers, getAllTopics } from '../lib/queries';
+import { getAllSpeakers, getAllTopics, getSiteSettings } from '../lib/queries';
 
-const [speakers, topics] = await Promise.all([getAllSpeakers(), getAllTopics()]);
+const [speakers, topics, settings] = await Promise.all([
+  getAllSpeakers(),
+  getAllTopics(),
+  getSiteSettings(),
+]);
+// tel: href needs the number without spaces; the visible text keeps its format.
+const telHref = settings?.phone ? `tel:${settings.phone.replace(/\s+/g, '')}` : null;
 const crumbs = [
   { name: 'Hjem', url: '/' },
   { name: 'Kontakt', url: '/kontakt/' },
@@ -31,9 +37,15 @@ const schema = [breadcrumbList(crumbs)];
         </div>
         <aside class="contact-info">
           <h2>Kontaktinformasjon</h2>
-          {/* TODO(content): reelle kontaktdetaljer fra Sanity siteSettings. */}
-          <p><strong>E-post:</strong> <span>TODO(content): e-postadresse</span></p>
-          <p><strong>Telefon:</strong> <span>TODO(content): telefonnummer</span></p>
+          {settings?.email && (
+            <p><strong>E-post:</strong> <a href={`mailto:${settings.email}`}>{settings.email}</a></p>
+          )}
+          {settings?.phone && telHref && (
+            <p><strong>Telefon:</strong> <a href={telHref}>{settings.phone}</a></p>
+          )}
+          {settings?.address && (
+            <p><strong>Adresse:</strong> <span>{settings.address}</span></p>
+          )}
           <p>
             Vi formidler foredragsholdere til bedrifter, konferanser og
             organisasjoner i hele Norge.
