@@ -9,6 +9,9 @@ export const topic = defineType({
     defineField({
       name: 'title',
       title: 'Tittel',
+      description:
+        'Navnet på temaet, f.eks. «Ledelse». Hvert tema blir en egen side som automatisk samler ' +
+        'foredragsholderne som dekker det. Sjekk om temaet finnes fra før — unngå duplikater.',
       type: 'string',
       validation: (rule) => rule.required(),
     }),

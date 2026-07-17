@@ -42,7 +42,8 @@ export const speaker = defineType({
       name: 'topics',
       title: 'Temaer',
       description:
-        'Velg tema og skriv en valgfri vinkling — denne foredragsholderens perspektiv på temaet.',
+        'Velg tema og skriv en valgfri vinkling — denne foredragsholderens perspektiv på temaet. ' +
+        'Mangler temaet i listen? Opprett det først under «Temaer» i menyen, så kan du velge det her.',
       type: 'array',
       // speakerTopic bundles the topic reference (existing-only, via disableNew)
       // with an optional per-speaker angle. Controlled vocabulary: new topics are
