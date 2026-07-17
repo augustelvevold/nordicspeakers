@@ -72,6 +72,14 @@ export const speaker = defineType({
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'testimonial' }] }],
     }),
+    defineField({
+      name: 'faq',
+      title: 'Ofte stilte spørsmål',
+      description:
+        'Spørsmål om denne foredragsholderen. Generelle spørsmål om et tema hører hjemme på temasiden, ikke her.',
+      type: 'array',
+      of: [{ type: 'faqItem' }],
+    }),
   ],
   preview: {
     select: { title: 'name', subtitle: 'shortBio', media: 'image' },

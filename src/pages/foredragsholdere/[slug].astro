@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import SanityImage from '../../components/SanityImage.astro';
 import Cta from '../../components/Cta.astro';
-import { person, breadcrumbList } from '../../lib/schema';
+import { person, breadcrumbList, faqPage } from '../../lib/schema';
 import { renderPortableText } from '../../lib/portableText';
 import { truncate } from '../../lib/text';
 import { urlFor } from '../../lib/image';
@@ -39,6 +39,7 @@ const ogImage = speaker.image?.asset?._ref
   ? urlFor(speaker.image).width(1200).height(630).fit('crop').auto('format').url()
   : undefined;
 
+const hasFaq = Array.isArray(speaker.faq) && speaker.faq.length > 0;
 const schema = [
   person({
     name: speaker.name,
@@ -50,6 +51,7 @@ const schema = [
     sameAs,
   }),
   breadcrumbList(crumbs),
+  ...(hasFaq ? [faqPage(speaker.faq!)] : []),
 ];
 
 const bioHtml = renderPortableText(speaker.fullBio);
@@ -93,6 +95,18 @@ const description = truncate(speaker.shortBio);
               <blockquote>{t.quote}</blockquote>
               <figcaption>{[t.personName, t.personRole, t.company].filter(Boolean).join(', ')}</figcaption>
             </figure>
+          ))}
+        </section>
+      )}
+
+      {hasFaq && (
+        <section class="section-block faq">
+          <h2>Ofte stilte spørsmål</h2>
+          {speaker.faq!.map((f) => (
+            <div class="faq__item">
+              <h3 class="faq__q">{f.question}</h3>
+              <p class="faq__a">{f.answer}</p>
+            </div>
           ))}
         </section>
       )}

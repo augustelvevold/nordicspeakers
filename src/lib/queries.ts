@@ -26,6 +26,7 @@ export interface SpeakerDetail extends SpeakerCardData {
   externalUrl?: string;
   sameAs?: string[];
   fullBio?: unknown;
+  faq?: FaqItem[];
   testimonials?: Testimonial[];
 }
 export interface TopicCardData {
@@ -63,7 +64,7 @@ const SPEAKER_CARD = `{
 const SPEAKER_DETAIL = `{
   _id, name, "slug": slug.current, shortBio, featured, externalUrl, sameAs,
   image{alt, asset},
-  fullBio,
+  fullBio, faq,
   "topics": topics[defined(@->_id)]->{ "title": title, "slug": slug.current },
   "testimonials": testimonials[defined(@->_id)]->{ quote, personName, personRole, company }
 }`;
