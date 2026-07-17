@@ -50,7 +50,9 @@ const description = truncate(topic.intro);
         <section class="section-block">
           <h2>Foredragsholdere innen {topic.title.toLowerCase()}</h2>
           <div class="grid grid--cards">
-            {topic.speakers.map((s) => <SpeakerCard speaker={s} />)}
+            {topic.speakers.map((s) => (
+              <SpeakerCard speaker={s} angle={s.topics?.find((t) => t.slug === topic.slug)?.vinkling} />
+            ))}
           </div>
         </section>
       )}

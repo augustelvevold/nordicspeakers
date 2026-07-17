@@ -87,6 +87,18 @@ const description = truncate(speaker.shortBio);
 
       {bioHtml && <div class="prose" set:html={bioHtml} />}
 
+      {speaker.topics && speaker.topics.some((t) => t.vinkling) && (
+        <section class="section-block">
+          <h2>Temaer {firstName} snakker om</h2>
+          {speaker.topics.filter((t) => t.vinkling).map((t) => (
+            <div class="topic-angle">
+              <h3 class="topic-angle__title"><a href={`/tema/${t.slug}/`}>{t.title}</a></h3>
+              <p>{t.vinkling}</p>
+            </div>
+          ))}
+        </section>
+      )}
+
       {speaker.testimonials && speaker.testimonials.length > 0 && (
         <section class="section-block">
           <h2>Hva kundene sier</h2>
@@ -120,3 +132,8 @@ const description = truncate(speaker.shortBio);
     <a href="/book-foredrag/" class="btn btn--primary">Book {firstName}</a>
   </div>
 </BaseLayout>
+
+<style>
+  .topic-angle { margin-block-start: 1.25rem; }
+  .topic-angle__title { margin-block-end: 0.25rem; }
+</style>

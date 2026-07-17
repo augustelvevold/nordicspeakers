@@ -7,6 +7,12 @@ export interface TopicRef {
   title: string;
   slug: string;
 }
+export interface SpeakerTopicRef {
+  title: string;
+  slug: string;
+  /** This speaker's angle on the topic, if written. */
+  vinkling?: string;
+}
 export interface Testimonial {
   quote: string;
   personName: string;
@@ -20,7 +26,7 @@ export interface SpeakerCardData {
   shortBio: string;
   featured?: boolean;
   image?: SanityImageValue;
-  topics?: TopicRef[];
+  topics?: SpeakerTopicRef[];
 }
 export interface SpeakerDetail extends SpeakerCardData {
   externalUrl?: string;
@@ -58,14 +64,14 @@ export interface TopicDetail {
 const SPEAKER_CARD = `{
   _id, name, "slug": slug.current, shortBio, featured,
   image{alt, asset},
-  "topics": topics[defined(@->_id)]->{ "title": title, "slug": slug.current }
+  "topics": topics[defined(topic->_id)]{ "title": topic->title, "slug": topic->slug.current, vinkling }
 }`;
 
 const SPEAKER_DETAIL = `{
   _id, name, "slug": slug.current, shortBio, featured, externalUrl, sameAs,
   image{alt, asset},
   fullBio, faq,
-  "topics": topics[defined(@->_id)]->{ "title": title, "slug": slug.current },
+  "topics": topics[defined(topic->_id)]{ "title": topic->title, "slug": topic->slug.current, vinkling },
   "testimonials": testimonials[defined(@->_id)]->{ quote, personName, personRole, company }
 }`;
 

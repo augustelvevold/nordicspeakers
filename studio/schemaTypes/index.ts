@@ -2,6 +2,7 @@
 import { blockContent } from './objects/blockContent';
 import { imageWithAlt } from './objects/imageWithAlt';
 import { faqItem } from './objects/faqItem';
+import { speakerTopic } from './objects/speakerTopic';
 
 import { siteSettings } from './documents/siteSettings';
 import { speaker } from './documents/speaker';
@@ -17,6 +18,7 @@ export const schemaTypes = [
   blockContent,
   imageWithAlt,
   faqItem,
+  speakerTopic,
   // Documents
   siteSettings,
   speaker,

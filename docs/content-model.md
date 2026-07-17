@@ -4,7 +4,7 @@ Schemas, portable text restrictions, initial speaker content, and copy tone. Rea
 
 ## Documents
 
-- `speaker`: name, slug, image (+alt), shortBio (plain text, 2–3 sentences — used for meta description and answer block), fullBio (portable text), topics (refs), externalUrl, sameAs[], featured (bool), testimonials (refs), faq[] ({question, answer} — speaker-specific Q&A, rendered with FAQPage schema on the speaker page).
+- `speaker`: name, slug, image (+alt), shortBio (plain text, 2–3 sentences — used for meta description and answer block), fullBio (portable text), topics (`speakerTopic[]` — each is an existing-topic ref + optional per-speaker `vinkling`/angle, shown on both the speaker and the topic page), externalUrl, sameAs[], featured (bool), testimonials (refs), faq[] ({question, answer} — speaker-specific Q&A, rendered with FAQPage schema on the speaker page).
 - `topic`: title, slug, intro (2–3 sentences), body (portable text), relatedSpeakers auto via reference lookup, faq[] ({question, answer}).
 - `event`: title, slug, speaker (ref), startDate, endDate?, locationName, locationAddress?, online (bool), description, bookingUrl?.
 - `article`: title, slug, author (ref → speaker or a `teamAuthor`), publishedAt, updatedAt, excerpt (≤155 chars, required — doubles as meta description), mainImage (+alt), body (portable text), topics (refs), faq[]?.
@@ -12,9 +12,9 @@ Schemas, portable text restrictions, initial speaker content, and copy tone. Rea
 - `testimonial`: quote, personName, personRole, company, speaker (ref).
 - `siteSettings` (singleton): org info, social links, contact details, default OG image.
 
-**Topics are a controlled vocabulary.** `speaker.topics` and `article.topics` use `disableNew` on the reference — editors select existing topics only; new topics are created deliberately in the Temaer section. This prevents duplicate topic documents (e.g. two "Entreprenørskap" with different slugs, one referenced per speaker).
+**Topics are a controlled vocabulary.** `article.topics` and the topic reference inside `speaker.topics` (the `speakerTopic` object) use `disableNew` — editors select existing topics only; new topics are created deliberately in the Temaer section. This prevents duplicate topic documents (e.g. two "Entreprenørskap" with different slugs, one referenced per speaker).
 
-**Topic content is speaker-agnostic.** A topic page lists many speakers (the list is derived from references), so its `intro`/`body`/`faq` must describe the *subject*, never one speaker. Anything specific to a person — their angle, "does X share their own story?" — belongs in `speaker.faq` (or `fullBio`), not the topic.
+**Topic content is speaker-agnostic.** A topic page lists many speakers (the list is derived from references), so its `intro`/`body`/`faq` must describe the *subject*, never one speaker. Anything specific to a person lives on the speaker: their angle on a topic → the `vinkling` in `speaker.topics`; person-specific Q&A → `speaker.faq`; longer story → `fullBio`. Never on the topic.
 
 Alt text is a **required field on all image fields** (descriptive Norwegian — it feeds the `<Image />` alt in [seo.md](seo.md)).
 

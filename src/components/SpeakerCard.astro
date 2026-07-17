@@ -4,9 +4,11 @@ import type { SpeakerCardData } from '../lib/queries';
 
 interface Props {
   speaker: SpeakerCardData;
+  /** Optional per-topic angle to surface (used on the topic page). */
+  angle?: string;
 }
 
-const { speaker } = Astro.props;
+const { speaker, angle } = Astro.props;
 const href = `/foredragsholdere/${speaker.slug}/`;
 ---
 <article class="card speaker-card">
@@ -20,6 +22,7 @@ const href = `/foredragsholdere/${speaker.slug}/`;
   <div class="card__body">
     <h3 class="card__title"><a href={href}>{speaker.name}</a></h3>
     <p class="card__text">{speaker.shortBio}</p>
+    {angle && <p class="card__angle">{angle}</p>}
     {speaker.topics && speaker.topics.length > 0 && (
       <ul class="tag-list">
         {speaker.topics.map((t) => (
@@ -29,3 +32,10 @@ const href = `/foredragsholdere/${speaker.slug}/`;
     )}
   </div>
 </article>
+
+<style>
+  .card__angle {
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+</style>
