@@ -74,9 +74,11 @@ export const speaker = defineType({
     }),
     defineField({
       name: 'faq',
-      title: 'Ofte stilte spørsmål',
+      title: 'Ofte stilte spørsmål – om foredragsholderen',
       description:
-        'Spørsmål om denne foredragsholderen. Generelle spørsmål om et tema hører hjemme på temasiden, ikke her.',
+        'Kun spørsmål om denne foredragsholderen. ' +
+        '✅ «Deler NAVN egne erfaringer i foredraget?»  ' +
+        '❌ «Hva er entreprenørskap?» — generelle spørsmål om et tema hører hjemme på temasiden.',
       type: 'array',
       of: [{ type: 'faqItem' }],
     }),

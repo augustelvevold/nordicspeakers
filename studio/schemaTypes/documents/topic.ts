@@ -34,7 +34,11 @@ export const topic = defineType({
     }),
     defineField({
       name: 'faq',
-      title: 'Ofte stilte spørsmål',
+      title: 'Ofte stilte spørsmål – om temaet',
+      description:
+        'Kun generelle spørsmål om selve temaet, som gjelder uansett hvem som holder foredraget. ' +
+        '✅ «Hvem passer et foredrag om entreprenørskap for?»  ' +
+        '❌ «Deler Thomas egne erfaringer?» — personlige spørsmål hører hjemme på foredragsholderen.',
       type: 'array',
       of: [{ type: 'faqItem' }],
     }),
