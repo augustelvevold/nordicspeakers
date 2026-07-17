@@ -42,7 +42,11 @@ export const speaker = defineType({
       name: 'topics',
       title: 'Temaer',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'topic' }] }],
+      // disableNew: topics are a controlled vocabulary — editors select existing
+      // ones, never create inline. Prevents accidental duplicate topic docs (two
+      // "Entreprenørskap" with different slugs). New topics are made deliberately
+      // in the Temaer section.
+      of: [{ type: 'reference', to: [{ type: 'topic' }], options: { disableNew: true } }],
     }),
     defineField({
       name: 'externalUrl',

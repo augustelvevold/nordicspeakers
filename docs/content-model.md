@@ -12,6 +12,8 @@ Schemas, portable text restrictions, initial speaker content, and copy tone. Rea
 - `testimonial`: quote, personName, personRole, company, speaker (ref).
 - `siteSettings` (singleton): org info, social links, contact details, default OG image.
 
+**Topics are a controlled vocabulary.** `speaker.topics` and `article.topics` use `disableNew` on the reference — editors select existing topics only; new topics are created deliberately in the Temaer section. This prevents duplicate topic documents (e.g. two "Entreprenørskap" with different slugs, one referenced per speaker).
+
 Alt text is a **required field on all image fields** (descriptive Norwegian — it feeds the `<Image />` alt in [seo.md](seo.md)).
 
 ## Portable text config

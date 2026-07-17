@@ -54,7 +54,8 @@ export const article = defineType({
       name: 'topics',
       title: 'Temaer',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'topic' }] }],
+      // disableNew: see speaker.ts — pick existing topics only, no inline creation.
+      of: [{ type: 'reference', to: [{ type: 'topic' }], options: { disableNew: true } }],
     }),
     defineField({
       name: 'body',
